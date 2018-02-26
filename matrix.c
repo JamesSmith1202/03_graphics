@@ -12,6 +12,13 @@ Returns:
 print the matrix
 */
 void print_matrix(struct matrix *m) {
+  int row, col;
+  for(row = 0; row < m->rows; row++){
+    for(col = 0; col < m->lastcol; col++){
+      printf("%lf\t", m->m[row][col]);
+    }
+    printf("\n");
+  }
 }
 
 /*-------------- void ident() --------------
@@ -21,6 +28,17 @@ Returns:
 turns m in to an identity matrix
 */
 void ident(struct matrix *m) {
+  int row, col;
+  for(row = 0; row < m->rows; row++){
+    for(col = 0; col < m->lastcol; col++){
+      if(col == row){
+        m->m[row][col] = 1;
+      }
+      else{
+        m->m[row][col] = 0;
+      }
+    }
+  }
 }
 
 
@@ -32,6 +50,24 @@ Returns:
 a*b -> b
 */
 void matrix_mult(struct matrix *a, struct matrix *b) {
+  if (a->cols != b->rows){
+    printf("invalid matrix operation");
+  }else{
+    struct matrix * new_mat = new_matrix(b->rows, b->cols);
+    int row, col, i;
+    double sum = 0;
+    for(row = 0; row < b -> lastcol; row++){
+      for(col = 0; col < a ->lastcol; col++){
+        for(i = 0; i < a->lastcol; i++){
+          sum += (a->m[col][i] * b->m[i][row]);
+        }
+        new_mat->m[col][row] = sum;
+        sum = 0;
+      }
+    }
+    copy_matrix(new_mat, b);
+    free_matrix(new_mat);
+  }
 }
 
 
